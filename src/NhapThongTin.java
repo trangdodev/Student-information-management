@@ -1,3 +1,12 @@
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,10 +22,14 @@ public class NhapThongTin extends javax.swing.JFrame {
     /**
      * Creates new form DiemSinhVien
      */
+    
+
     public NhapThongTin() {
         initComponents();
+        
     }
-
+    
+private DBAccess dbAccess;
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -90,6 +103,11 @@ public class NhapThongTin extends javax.swing.JFrame {
         btnLuu.setBackground(new java.awt.Color(102, 153, 255));
         btnLuu.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnLuu.setText("Lưu");
+        btnLuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLuuActionPerformed(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel10.setText("Điểm:");
@@ -100,14 +118,17 @@ public class NhapThongTin extends javax.swing.JFrame {
         jLabel11.setText("Môn học:");
 
         jbcMon.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jbcMon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lập trình ứng dụng với Java", "Kiến trúc và hệ điều hành máy tính", "Bảo mật thông tin", "Công nghệ phần mềm", "Lập trình mạng máy tính", "Lập trình trên môi trường Windows", "Lập trình trên thiết bị di động", "Lập trình Web", "Mạng máy tính", "Phân tích thiết kế hệ thống", "Quản lý dự án công nghệ thông tin", "Trí tuệ nhân tạo", "Kinh tế lượng", "Kinh tế quốc tế ", "Kinh tế vi mô ", "Kinh tế vĩ mô ", "Luật kinh doanh", "Marketing căn bản", "Mô phỏng đơn từ thương mại", "Nghiệp vụ ngoại thương", "Nguyên lý kế toán", "Nguyên lý thống kê kinh tế ", "Phân tích dữ liệu", "Quản trị bán hàng ", "Kế toán chi phí", "Kế toán quản trị", "Kế toán tài chính 1 ", "Kế toán tài chính 2 ", "Kế toán tài chính 3", "Kiểm toán Báo cáo tài chính ", "Lý thuyết Kiểm toán", "Mô phỏng Kế toán tài chính", "Mô phỏng Kiểm toán", "Mô phỏng nghiệp vụ kế toán Việt ", "Nam", "Phân tích báo cáo tài chính", "Nguyên lý kế toán", "Nguyên lý bảo hiểm", "Nghiệp vụ ngân hàng 2", "Nghiệp vụ ngân hàng 1", "Ngân hàng ảo", "Mô phỏng báo cáo tài chính", "Công cụ tài chính phái sinh", "Mô phỏng nghiệp vụ kế toán Việt ", "Nam", "Mô phỏng Kiểm toán", "Mô phỏng báo cáo tài chính", "Công cụ tài chính phái sinh", "Tổ chức xếp dỡ", "Kinh tế quốc tế", "Đại lý tàu biển", "Nghiệp vụ giao nhận hàng nguyên ", "Container và hàng lẻ", "Thương mại điện tử và ứng dụng công ", "nghệ thông tin trong Logistics", "Quản trị chất lượng logistics và chuỗi ", "cung ứng ", "Quản trị hiệu quả kho hàng trong chuỗi ", "cung ứng", "Mô hình quản lý và vận hành cảng biển ", "Nghiệp vụ ngoại thương", "Nhập môn ngành Logistics" }));
 
         jbcNganh.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jbcNganh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Công nghệ thông tin", "Quản trị kinh doanh", "Kế toán", "Tài chính-Ngân hàng ", "Logistic", " " }));
 
         btnReset.setBackground(new java.awt.Color(102, 153, 255));
         btnReset.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
 
         jMenuBar1.setMaximumSize(new java.awt.Dimension(385, 5000));
 
@@ -217,6 +238,86 @@ public class NhapThongTin extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        // TODO add your handling code here:
+        txtMSSV.setText("");
+        txtHoTen.setText("");
+        txtDiem.setText("");
+        txtLop.setText("");
+        txtNgaySinh.setText("");
+        txtNoiSinh.setText("");
+    }//GEN-LAST:event_btnResetActionPerformed
+
+    private void btnLuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuActionPerformed
+        // TODO add your handling code here:
+        // Lấy dữ liệu từ các trường nhập
+    // Lấy dữ liệu từ các trường nhập
+
+        String hoTen = txtHoTen.getText();
+        String mSSV = txtMSSV.getText();
+        String diem = txtDiem.getText();
+        String lop = txtLop.getText();
+        String ngaySinhText = txtNgaySinh.getText(); // Lưu ngày tháng dưới dạng văn bản
+        String noiSinh = txtNoiSinh.getText();
+        String monHoc = (String) jbcMon.getSelectedItem();
+        String nganh = (String) jbcNganh.getSelectedItem();
+
+        if (!hoTen.isEmpty() && !mSSV.isEmpty() && !diem.isEmpty() && !lop.isEmpty() && !ngaySinhText.isEmpty() && !noiSinh.isEmpty() && monHoc != null && nganh != null) {
+        try {
+        // Tạo một đối tượng DBAccess để thực hiện kết nối và truy vấn cơ sở dữ liệu
+        DBAccess dbAccess = new DBAccess();
+
+        // Tạo câu truy vấn SQL để thêm dữ liệu vào cơ sở dữ liệu
+        String sql = "INSERT INTO sinhvien (ho_ten, ma_sinh_vien, diem, lop, ngay_sinh, noi_sinh, mon_hoc, nganh) VALUES (?, ?, ?, ?, STR_TO_DATE(?, '%d-%m-%Y'), ?, ?, ?)";
+
+        // Tạo một PreparedStatement để thực hiện câu truy vấn
+        PreparedStatement pstmt = dbAccess.getConnection().prepareStatement(sql);
+
+        // Đặt giá trị thay thế trong câu truy vấn
+        pstmt.setString(1, hoTen);
+        pstmt.setString(2, mSSV);
+        pstmt.setString(3, diem);
+        pstmt.setString(4, lop);
+        pstmt.setString(5, ngaySinhText); // Sử dụng định dạng ngày tháng của bạn
+        pstmt.setString(6, noiSinh);
+        pstmt.setString(7, monHoc);
+        pstmt.setString(8, nganh);
+
+        // Thực hiện câu truy vấn để thêm dữ liệu
+        int rowsAffected = pstmt.executeUpdate();
+
+        // Đóng kết nối
+        pstmt.close();
+
+        // Kiểm tra xem dữ liệu đã được thêm thành công hay không
+        if (rowsAffected > 0) {
+            // Hiển thị thông báo thành công
+            JOptionPane.showMessageDialog(this, "Lưu thông tin sinh viên thành công");
+
+            // Xóa dữ liệu trong các trường nhập sau khi lưu thành công
+            txtHoTen.setText("");
+            txtMSSV.setText("");
+            txtDiem.setText("");
+            txtLop.setText("");
+            txtNgaySinh.setText("");
+            txtNoiSinh.setText("");
+            jbcMon.setSelectedIndex(0);
+            jbcNganh.setSelectedIndex(0);
+        } else {
+            // Hiển thị thông báo lỗi nếu không thành công
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu vào cơ sở dữ liệu");
+        }
+    } catch (SQLException e) {
+        // Xử lý lỗi nếu có
+        JOptionPane.showMessageDialog(this, "Lỗi khi lưu dữ liệu vào cơ sở dữ liệu: " + e.getMessage());
+    }
+} else {
+    // Nếu còn thiếu thông tin, hiển thị thông báo lỗi
+    JOptionPane.showMessageDialog(this, "Nhập thiếu thông tin, vui lòng nhập lại");
+}
+
+    }//GEN-LAST:event_btnLuuActionPerformed
 
     /**
      * @param args the command line arguments
