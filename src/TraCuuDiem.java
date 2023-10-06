@@ -9,6 +9,9 @@ public class TraCuuDiem extends javax.swing.JFrame {
     private Socket client;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+    public TraCuuDiem(){
+        initComponents();
+    }
     
     public TraCuuDiem(Socket client) {
         this.client = client;
@@ -219,13 +222,18 @@ public class TraCuuDiem extends javax.swing.JFrame {
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
         dispose();
     }//GEN-LAST:event_btnResetActionPerformed
-
-    public static void main(String[] args) throws IOException {
+    private static void initial() throws IOException{
         Socket client = new Socket("localhost", 9999);
         
         java.awt.EventQueue.invokeLater(() -> {
             new TraCuuDiem(client).setVisible(true);
         });
+    }
+    public static void openForm() throws IOException {
+        initial();
+    }
+    public static void main(String args[]) throws IOException {
+        initial();
     }
     public void closeConnection() {
         try {

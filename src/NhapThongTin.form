@@ -16,6 +16,9 @@
               <Font name="Segoe UI" size="20" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="meThongTinActionPerformed"/>
+          </Events>
         </Menu>
         <Menu class="javax.swing.JMenu" name="meTraCuu">
           <Properties>
@@ -24,6 +27,9 @@
               <Font name="Segoe UI" size="20" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="meTraCuuActionPerformed"/>
+          </Events>
         </Menu>
         <Menu class="javax.swing.JMenu" name="meXepHang">
           <Properties>

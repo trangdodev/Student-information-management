@@ -1,12 +1,27 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class NhapThongTin extends javax.swing.JFrame {
- 
-    public NhapThongTin() {
+ private  ObjectOutputStream oos;
+    private  ObjectInputStream ois;     
+    private Socket client;
+
+    public NhapThongTin(Socket client) {
         initComponents();
-        
+
+        this.client = client;
+        try {
+            // Tạo luồng ghi và đọc một lần và sử dụng chúng liên tục
+            oos = new ObjectOutputStream(client.getOutputStream());
+            ois = new ObjectInputStream(client.getInputStream());
+        } catch (IOException e) {}
         NganhMon nganhMon = new NganhMon(jbcNganh, jbcMon);
         jbcNganh.addItem("Công nghệ thông tin");
         jbcNganh.addItem("Quản trị kinh doanh");
@@ -14,8 +29,7 @@ public class NhapThongTin extends javax.swing.JFrame {
         jbcNganh.addItem("Logistic");
         jbcNganh.addItem("Kế toán");
 
-        
-    } 
+    }
     
 private DBAccess dbAccess;
 
@@ -118,10 +132,20 @@ private DBAccess dbAccess;
 
         meThongTin.setText("Thông tin sinh viên");
         meThongTin.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        meThongTin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                meThongTinActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(meThongTin);
 
         meTraCuu.setText("Tra cứu điểm thi");
         meTraCuu.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        meTraCuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                meTraCuuActionPerformed(evt);
+            }
+        });
         jMenuBar1.add(meTraCuu);
 
         meXepHang.setText("Xếp hạng sinh viên");
@@ -303,40 +327,39 @@ private DBAccess dbAccess;
 
     }//GEN-LAST:event_btnLuuActionPerformed
 
+    private void meThongTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_meThongTinActionPerformed
+     try {
+         // TODO add your handling code here:
+         NhapThongTin.openForm();
+     } catch (IOException ex) {
+         Logger.getLogger(NhapThongTin.class.getName()).log(Level.SEVERE, null, ex);
+     }
+    }//GEN-LAST:event_meThongTinActionPerformed
+
+    private void meTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_meTraCuuActionPerformed
+        System.out.println("HELLO");
+        try {
+         // TODO add your handling code here:
+         TraCuuDiem.openForm();
+     } catch (IOException ex) {
+         Logger.getLogger(NhapThongTin.class.getName()).log(Level.SEVERE, null, ex);
+     }
+    }//GEN-LAST:event_meTraCuuActionPerformed
+private static void initial() throws IOException{
+        Socket client = new Socket("localhost", 9999);
+        
+        java.awt.EventQueue.invokeLater(() -> {
+            new NhapThongTin(client).setVisible(true);
+        });
+    }
+public static void openForm() throws IOException{
+    initial();
+}
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NhapThongTin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NhapThongTin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NhapThongTin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NhapThongTin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NhapThongTin().setVisible(true);
-            }
-        });
+    public static void main(String args[]) throws IOException {
+        initial();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,4 +1,10 @@
-/*
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -9,6 +15,10 @@
  * @author iammt
  */
 public class XepHangSinhVien extends javax.swing.JFrame {
+    private  ObjectOutputStream oos;
+    private  ObjectInputStream ois;     
+    private Socket client;
+
 
     /**
      * Creates new form XepHangSinhVien
@@ -16,7 +26,15 @@ public class XepHangSinhVien extends javax.swing.JFrame {
     public XepHangSinhVien() {
         initComponents();
     }
-
+public XepHangSinhVien(Socket client) {
+        this.client = client;
+        try {
+            // Tạo luồng ghi và đọc một lần và sử dụng chúng liên tục
+            oos = new ObjectOutputStream(client.getOutputStream());
+            ois = new ObjectInputStream(client.getInputStream());
+        } catch (IOException e) {}
+        initComponents();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,7 +163,18 @@ public class XepHangSinhVien extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
+private static void initial() throws IOException{
+        Socket client = new Socket("localhost", 9999);
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new XepHangSinhVien(client).setVisible(true);
+            }
+        });
+    }
+public static void openForm() throws IOException{
+    initial();
+}
     /**
      * @param args the command line arguments
      */

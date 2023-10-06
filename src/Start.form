@@ -91,6 +91,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Tra c&#x1ee9;u &#x111;i&#x1ec3;m sinh vi&#xea;n"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTraCuuActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnXepHang">
       <Properties>
@@ -102,6 +105,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="X&#x1ebf;p h&#x1ea1;ng sinh vi&#xea;n"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnXepHangActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

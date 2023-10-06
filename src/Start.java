@@ -10,6 +10,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -65,10 +67,20 @@ public class Start extends javax.swing.JFrame {
         btnTraCuu.setBackground(new java.awt.Color(204, 204, 255));
         btnTraCuu.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         btnTraCuu.setText("Tra cứu điểm sinh viên");
+        btnTraCuu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTraCuuActionPerformed(evt);
+            }
+        });
 
         btnXepHang.setBackground(new java.awt.Color(204, 204, 255));
         btnXepHang.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         btnXepHang.setText("Xếp hạng sinh viên");
+        btnXepHang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXepHangActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -114,24 +126,34 @@ public class Start extends javax.swing.JFrame {
             initComponents();
         }
     private void btnThongTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThongTinActionPerformed
-        // TODO add your handling code here:
-        // Gửi yêu cầu đến máy chủ
-        System.out.println("vo ne m ");
-    
-    String response = sendRequestToServer("ThongTinRequest");
-    
-
-    // Kiểm tra phản hồi từ máy chủ
-        System.out.println("response"+response);
-    if (response!=null&&response.equals("ChuyenHuong")) {
-        // Nếu máy chủ trả về "ChuyenHuong", chuyển hướng đến form NhapThongTin
-        NhapThongTin nhapThongTinForm = new NhapThongTin();
-        nhapThongTinForm.setVisible(true);
-        this.dispose(); // Đóng form hiện tại sau khi chuyển hướng
-    } else {
-        // Xử lý trường hợp khác (nếu cần)
-    }
+        try {
+            // TODO add your handling code here:
+            NhapThongTin.openForm() ;
+//        this.dispose();
+        } catch (IOException ex) {
+            Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnThongTinActionPerformed
+
+    private void btnTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraCuuActionPerformed
+        try {
+            // TODO add your handling code here:
+            TraCuuDiem.openForm() ;
+        } catch (IOException ex) {
+            Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_btnTraCuuActionPerformed
+
+    private void btnXepHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXepHangActionPerformed
+        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            XepHangSinhVien.openForm() ;
+        } catch (IOException ex) {
+            Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnXepHangActionPerformed
 
     private String sendRequestToServer(String request) {
         RequestSendToServer requestSendToServer = new RequestSendToServer("navigate", request);
