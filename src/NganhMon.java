@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 
 /*
@@ -124,5 +126,22 @@ public class NganhMon {
         }
     }
     
-    
+    public static void main(String[] args) {
+        // Tạo và hiển thị giao diện
+        JFrame frame = new JFrame("NganhMon Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JComboBox<String> jbcNganh = new JComboBox<>();
+        JComboBox<String> jbcMon = new JComboBox<>();
+
+        NganhMon nganhMon = new NganhMon(jbcNganh, jbcMon);
+
+        JPanel panel = new JPanel();
+        panel.add(jbcNganh);
+        panel.add(jbcMon);
+
+        frame.add(panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
 }

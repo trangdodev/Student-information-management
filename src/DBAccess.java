@@ -1,18 +1,8 @@
-
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author iammt
- */
 public class DBAccess {
     private Connection con;
     private Statement stmt;
@@ -22,17 +12,14 @@ public class DBAccess {
             MyConnection myCon = new MyConnection();
             con = myCon.getConnection();
             stmt = con.createStatement();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) {}
     }
 
     public int Update(String str) {
         try {
             int i = stmt.executeUpdate(str);
             return i;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return -1;
         }
     }
@@ -41,8 +28,7 @@ public class DBAccess {
         try {
             ResultSet rs = stmt.executeQuery(str);
             return rs;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
             return null;
         }
     }
