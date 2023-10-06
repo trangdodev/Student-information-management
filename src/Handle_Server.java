@@ -9,57 +9,74 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Handle_Server implements AutoCloseable {
-    private Connection connection;
-    private PreparedStatement pstmt;
-    
-    public Handle_Server() throws SQLException {
-        connection = DriverManager.getConnection("jdbc:mysql://localhost/qlsv?user=root&password=");
-        String query = "SELECT ho_ten FROM sinhvien WHERE ma_sinh_vien = ?";
-        pstmt = connection.prepareStatement(query);
+public class Handle_Server {
+    public static void main(String[] args) {
+        try (ServerSocket serverSocket = new ServerSocket(9999)) {
+            System.out.println("Server đã sẵn sàng");
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Client đã kết nối đến server");
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                new Thread(clientHandler).start();
+            }
+        } catch (IOException e) {}
     }
-    
-    public String getStudentName(String mSSV) throws SQLException {
-        pstmt.setString(1, mSSV);
-        ResultSet rset = pstmt.executeQuery();
-        if (rset.next()) {
-            return rset.getString("ho_ten");
-        } else {
-            return null;
-        } 
-    }
-    public Connection getConnection() {
-        return connection;
+}
+
+class ClientHandler implements Runnable {
+    private Socket clientSocket;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
+
+    public ClientHandler(Socket clientSocket) {
+        this.clientSocket = clientSocket;
+        try {
+            oos = new ObjectOutputStream(clientSocket.getOutputStream());
+            ois = new ObjectInputStream(clientSocket.getInputStream());
+        } catch (IOException e) {}
     }
 
     @Override
-    public void close() throws SQLException {
-        if (connection != null && !connection.isClosed()) {
-            connection.close();
+    public void run() {
+        try {
+            while (true) {
+                String mSSV = (String) ois.readObject();
+                String hoTen = getStudentName(mSSV);
+                oos.writeObject(hoTen);
+                System.out.println("Lấy dữ liệu thành công từ Database");
+                oos.flush();
+            }
+        } catch (IOException e) {
+            System.out.println("Client đã ngắt kết nối");
+        } catch (ClassNotFoundException e) {
+        } finally {
+            try {
+                if (oos != null) {
+                    oos.close();
+                }
+                if (ois != null) {
+                    ois.close();
+                }
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
+            } catch (IOException e) {}
         }
     }
-    
-    public static void main(String[] args) throws IOException {
-        ServerSocket server = new ServerSocket(9999);
-        System.out.println("Server đã sẵn sàng");
-        
-        try (
-             Handle_Server dbConnectionWrapper = new Handle_Server()) {
 
-            while (true) {
-                try (Socket client = server.accept();
-                     ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
-                     ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {
+    private String getStudentName(String mSSV) {
+        String hoTen = null;
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost/qlsv?user=root&password=");
+             PreparedStatement pstmt = connection.prepareStatement("SELECT ho_ten FROM sinhvien WHERE ma_sinh_vien = ?")) {
 
-                    String mSSV = (String) ois.readObject();
-                    String hoTen = dbConnectionWrapper.getStudentName(mSSV);
+            pstmt.setString(1, mSSV);
+            ResultSet resultSet = pstmt.executeQuery();
 
-                    if (mSSV != null) {
-                        oos.writeObject(hoTen);
-                    }
-                } catch (Exception e) {}
-            }  
+            if (resultSet.next()) {
+                hoTen = resultSet.getString("ho_ten");
+            }
         } catch (SQLException e) {}
-    }      
+        return hoTen;
+    }
 }
-    

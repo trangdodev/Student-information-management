@@ -16,9 +16,7 @@ public class TraCuuDiem extends javax.swing.JFrame {
             // Tạo luồng ghi và đọc một lần và sử dụng chúng liên tục
             oos = new ObjectOutputStream(client.getOutputStream());
             ois = new ObjectInputStream(client.getInputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
         initComponents();
     }
 
@@ -191,25 +189,26 @@ public class TraCuuDiem extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sendRequest(String request) {
-        
+    public void sendRequest(String request) {
         try {
             oos.writeObject(request);
             oos.flush();
-            String dataFromServer = (String) ois.readObject();
+            Object response = ois.readObject();
 
-            if (dataFromServer != null) {
-                txtTen.setText(dataFromServer);
-            } else {
-                JOptionPane.showMessageDialog(this, "Mã số sinh viên không tồn tại, vui lòng nhập lại !");
-            }
-        } catch (IOException | ClassNotFoundException e) {}         
+        if (response instanceof String) {
+            String dataFromServer = (String) response;
+            txtTen.setText(dataFromServer);    
+        } else {
+            JOptionPane.showMessageDialog(this, "Mã số sinh viên không tồn tại, vui lòng nhập lại !");
+        }
+    } catch (IOException | ClassNotFoundException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi gửi hoặc nhận dữ liệu từ máy chủ.");
     }
+}
 
     
 
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
-        
         String MaSV = txtMSSV.getText();
         sendRequest(MaSV);
     }//GEN-LAST:event_btnOkActionPerformed
@@ -221,14 +220,25 @@ public class TraCuuDiem extends javax.swing.JFrame {
     public static void main(String[] args) throws IOException {
         Socket client = new Socket("localhost", 9999);
         
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new TraCuuDiem(client).setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new TraCuuDiem(client).setVisible(true);
         });
     }
-
+    public void closeConnection() {
+        try {
+            if (oos != null) {
+                oos.close();
+            }
+            if (ois != null) {
+                ois.close();
+            }
+            if (client != null && !client.isClosed()) {
+                client.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOk;
     private javax.swing.JButton btnReset;
