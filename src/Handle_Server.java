@@ -41,14 +41,28 @@ class ClientHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                String mSSV = (String) ois.readObject();
-                String hoTen = getStudentName(mSSV);
-                oos.writeObject(hoTen);
-                System.out.println("Lấy dữ liệu thành công từ Database");
+                RequestSendToServer requestSendToServer = (RequestSendToServer) ois.readObject();
+                String valueSend ="";
+                switch(requestSendToServer.type){
+                    case "getName":{
+                         valueSend = getStudentName(requestSendToServer.value);
+                         System.out.println("Lấy dữ liệu thành công từ Database");
+                    break;
+                    }
+                    case "navigate":{
+                        valueSend=processRequest(requestSendToServer.value);
+                    break;
+                    }
+                    default:{
+                        valueSend="";
+                    break;}
+                }
+                System.out.println(valueSend);
+                oos.writeObject(valueSend);
                 oos.flush();
             }
         } catch (IOException e) {
-            System.out.println("Client đã ngắt kết nối");
+            System.out.println(e);
         } catch (ClassNotFoundException e) {
         } finally {
             try {
@@ -79,4 +93,15 @@ class ClientHandler implements Runnable {
         } catch (SQLException e) {}
         return hoTen;
     }
+        public  String processRequest(String request) {
+        System.out.println("vo ne");
+    if (request.equals("ThongTinRequest")) {
+        // Nếu yêu cầu là "ThongTinRequest", máy chủ quyết định chuyển hướng
+        // và trả về "ChuyenHuong" để thông báo cho client
+        return "ChuyenHuong";
+    } else {
+        // Xử lý trường hợp khác (nếu cần)
+        return "PhanHoiKhac";
+    }
+}
 }

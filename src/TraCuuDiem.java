@@ -190,8 +190,9 @@ public class TraCuuDiem extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public void sendRequest(String request) {
-        try {
-            oos.writeObject(request);
+         RequestSendToServer requestSendToServer = new RequestSendToServer("getName", request);
+         try {
+            oos.writeObject(requestSendToServer);
             oos.flush();
             Object response = ois.readObject();
 
@@ -202,8 +203,10 @@ public class TraCuuDiem extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Mã số sinh viên không tồn tại, vui lòng nhập lại !");
         }
     } catch (IOException | ClassNotFoundException e) {
+             System.out.println(e);
         JOptionPane.showMessageDialog(this, "Lỗi khi gửi hoặc nhận dữ liệu từ máy chủ.");
     }
+
 }
 
     
