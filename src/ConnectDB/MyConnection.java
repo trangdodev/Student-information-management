@@ -1,3 +1,5 @@
+package ConnectDB;
+
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,8 +9,8 @@ import javax.swing.JOptionPane;
     public class MyConnection {
     public Connection getConnection() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String URL = "jdbc:mysql://localhost/qlsv?user=root&password=";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String URL = "jdbc:sqlserver://localhost:8081;Database=qlsv;user=trang;password=123456";
             Connection con = DriverManager.getConnection(URL);
             return con;
         } catch (ClassNotFoundException | SQLException ex) {

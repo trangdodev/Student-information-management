@@ -1,4 +1,9 @@
+package studentma;
 
+import Information.FindStudent;
+import Rating.StudentRanking;
+import Lookup.LookupScores;
+import Information.NewInfo;
 import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
@@ -18,14 +23,14 @@ import java.util.logging.Logger;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author iammt
  */
 public class Start extends javax.swing.JFrame {
+
     private ObjectOutputStream oos;
-    private ObjectInputStream ois;     
+    private ObjectInputStream ois;
     private Socket client;
 
     /**
@@ -88,23 +93,22 @@ public class Start extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(74, 74, 74)
-                .addComponent(btnThongTin)
-                .addGap(64, 64, 64)
-                .addComponent(btnTraCuu)
-                .addGap(69, 69, 69)
-                .addComponent(btnXepHang)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(24, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(124, 124, 124))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnThongTin)
+                        .addGap(64, 64, 64)
+                        .addComponent(btnTraCuu)
+                        .addGap(69, 69, 69)
+                        .addComponent(btnXepHang)))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(40, 40, 40)
                 .addComponent(jLabel1)
-                .addGap(58, 58, 58)
+                .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThongTin)
                     .addComponent(btnTraCuu)
@@ -115,20 +119,20 @@ public class Start extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     public Start(Socket client) {
-            this.client = client;
-            try {
-                // Tạo luồng ghi và đọc một lần và sử dụng chúng liên tục
-                oos = new ObjectOutputStream(client.getOutputStream());
-                ois = new ObjectInputStream(client.getInputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            initComponents();
+        this.client = client;
+        try {
+            // Tạo luồng ghi và đọc một lần và sử dụng chúng liên tục
+            oos = new ObjectOutputStream(client.getOutputStream());
+            ois = new ObjectInputStream(client.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        initComponents();
+    }
     private void btnThongTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThongTinActionPerformed
         try {
             // TODO add your handling code here:
-            NhapThongTin.openForm() ;
+            FindStudent.openForm();
 //        this.dispose();
         } catch (IOException ex) {
             Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
@@ -138,7 +142,7 @@ public class Start extends javax.swing.JFrame {
     private void btnTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTraCuuActionPerformed
         try {
             // TODO add your handling code here:
-            TraCuuDiem.openForm() ;
+            LookupScores.openForm();
         } catch (IOException ex) {
             Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -146,10 +150,9 @@ public class Start extends javax.swing.JFrame {
     }//GEN-LAST:event_btnTraCuuActionPerformed
 
     private void btnXepHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXepHangActionPerformed
-        // TODO add your handling code here:
         try {
             // TODO add your handling code here:
-            XepHangSinhVien.openForm() ;
+            StudentRanking.openForm();
         } catch (IOException ex) {
             Logger.getLogger(Start.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -161,11 +164,10 @@ public class Start extends javax.swing.JFrame {
             // Gửi yêu cầu đến máy chủ và nhận phản hồi
             oos.writeObject(requestSendToServer);
             oos.flush();
-             Object response = ois.readObject();
-             
+            Object response = ois.readObject();
 
             if (response instanceof String) {
-                return  (String) response;
+                return (String) response;
             }
             return "";
         } catch (IOException | ClassNotFoundException e) {
@@ -173,7 +175,8 @@ public class Start extends javax.swing.JFrame {
             e.printStackTrace();
             return "LoiKetNoi";
         }
-}
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -200,10 +203,11 @@ public class Start extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Start.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
-         Socket client = new Socket("localhost", 9999);
-        
+        Socket client = new Socket("localhost", 9999);
+
         java.awt.EventQueue.invokeLater(() -> {
             new Start(client).setVisible(true);
         });
